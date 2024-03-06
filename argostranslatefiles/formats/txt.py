@@ -1,13 +1,11 @@
-from argostranslate.translate import ITranslation
-
 from argostranslatefiles.abstract_file import AbstractFile
 
 
 class Txt(AbstractFile):
     supported_file_extensions = ['.txt']
 
-    def translate(self, underlying_translation: ITranslation, file_path: str):
-        outfile_path = self.get_output_path(underlying_translation, file_path)
+    def translate(self, file_path: str):
+        outfile_path = self.get_output_path(file_path)
 
         infile = open(file_path, "r")
         outfile = open(outfile_path, "w")
