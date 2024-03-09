@@ -1,35 +1,25 @@
 import zipfile
 
-from argostranslate.tags import translate_tags
-from argostranslate.translate import ITranslation
-from bs4 import BeautifulSoup
-
+from odfdo import Document
 from argostranslatefiles.formats.abstract_xml import AbstractXml
 
 
 class Odt(AbstractXml):
     supported_file_extensions = ['.odt']
 
-    def translate(self, underlying_translation: ITranslation, file_path: str):
-        outzip_path = self.get_output_path(underlying_translation, file_path)
+    def translate(self, translation_request, file_path: str):
+        output_path = self.get_output_path(file_path)
 
-        inzip = zipfile.ZipFile(file_path, "r")
-        outzip = zipfile.ZipFile(outzip_path, "w")
+        document = Document(file_path)
 
-        for inzipinfo in inzip.infolist():
-            with inzip.open(inzipinfo) as infile:
-                if inzipinfo.filename == "content.xml":
-                    soup = BeautifulSoup(infile.read(), 'xml')
+        body = document.body
 
-                    itag = self.itag_of_soup(soup)
-                    translated_tag = translate_tags(underlying_translation, itag)
-                    translated_soup = self.soup_of_itag(translated_tag)
+        for paragraph in body.get_paragraphs():
+            #These can't be accurately placed in the translation, so remove them
+            paragraph.remove_spans()
+            paragraph.remove_links()
+            paragraph.text = translation_request(paragraph.text)
 
-                    outzip.writestr(inzipinfo.filename, str(translated_soup))
-                else:
-                    outzip.writestr(inzipinfo.filename, infile.read())
-
-        inzip.close()
-        outzip.close()
-
-        return outzip_path
+ 
+        document.save(output_path, pretty=True)
+        return output_path

@@ -1,7 +1,7 @@
 #from argostranslatefiles.formats.html import Html
 #from argostranslatefiles.formats.opendocument.odp import Odp
-#from argostranslatefiles.formats.opendocument.odt import Odt
-#from argostranslatefiles.formats.openxml.docx import Docx
+from argostranslatefiles.formats.opendocument.odt import Odt
+from argostranslatefiles.formats.openxml.docx import Docx
 #from argostranslatefiles.formats.openxml.pptx import Pptx
 from argostranslatefiles.formats.txt import Txt
 #from argostranslatefiles.formats.epub import Epub
@@ -9,16 +9,16 @@ from argostranslatefiles.formats.txt import Txt
 def get_supported_formats():
     return [
         Txt(),
-        #Odt(),
+        Odt(),
         #Odp(),
-        #Docx(),
+        Docx(),
         #Pptx()
         #Epub(),
         #Html()
     ]
 
 
-def translate_file(file_path: str):
+def translate_file(translation_request, file_path: str):
     """Translate a file.
 
     Args:
@@ -30,6 +30,6 @@ def translate_file(file_path: str):
 
     for supported_format in get_supported_formats():
         if supported_format.support(file_path):
-            return supported_format.translate(file_path)
+            return supported_format.translate(translation_request, file_path)
 
     return False

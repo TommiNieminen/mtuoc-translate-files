@@ -8,11 +8,11 @@ from argostranslatefiles.formats.abstract_xml import AbstractXml
 class Docx(AbstractXml):
     supported_file_extensions = ['.docx']
 
-    def translate_paragraphs(self,paragraphs,underlying_translation):
+    def translate_paragraphs(self,paragraphs, translation_request):
         for paragraph in paragraphs:
 
             if len(paragraph.runs) == 1:
-                paragraph.runs[0].text = underlying_translation.translate(paragraph.runs[0].text)
+                paragraph.runs[0].text = translation_request(paragraph.runs[0].text)
             elif len(paragraph.runs) == 0:
                 continue
             else:
@@ -24,7 +24,7 @@ class Docx(AbstractXml):
                 dom_italic = dominant_run.font.italic
                 dom_underline = dominant_run.font.underline
 
-                paragraph.text = underlying_translation.translate(paragraph.text)
+                paragraph.text = translation_request(paragraph.text)
                 paragraph.runs[0].font.name = dom_font
                 paragraph.runs[0].font.bold = dom_bold
                 paragraph.runs[0].font.italic = dom_italic
@@ -32,16 +32,16 @@ class Docx(AbstractXml):
 
 
 
-    def translate(self, underlying_translation: ITranslation, file_path: str):
-        outzip_path = self.get_output_path(underlying_translation, file_path)
+    def translate(self, translation_request, file_path: str):
+        outzip_path = self.get_output_path(file_path)
         document = Document(file_path)
 
-        self.translate_paragraphs(document.paragraphs,underlying_translation)
+        self.translate_paragraphs(document.paragraphs, translation_request)
         
         for table in document.tables:
             for row in table.rows:
                 for cell in row.cells:
-                    self.translate_paragraphs(cell.paragraphs,underlying_translation)
+                    self.translate_paragraphs(cell.paragraphs, translation_request)
 
         document.save(outzip_path)
 

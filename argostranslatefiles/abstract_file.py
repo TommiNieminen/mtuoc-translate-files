@@ -13,9 +13,8 @@ class AbstractFile():
     def get_output_path(self, file_path: str):
         dir_path = os.path.dirname(file_path)
         file_name, file_ext = os.path.splitext(os.path.basename(file_path))
-        to_code = underlying_translation.to_lang.code
 
-        return dir_path + "/" + file_name + '_' + to_code + file_ext
+        return dir_path + "/" + file_name + "_translated" + file_ext
 
     @abc.abstractmethod
-    def translate(self, file_path: str): raise NotImplementedError
+    def translate(self, translation_request, file_path: str): raise NotImplementedError
