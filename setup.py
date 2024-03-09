@@ -7,14 +7,13 @@ with open("README.md") as f:
     long_description = f.read()
 
 setup(
-    name="argos-translate-files",
-    version="1.1.4",
-    description="Translate files with Argos Translate",
+    name="mtuoc-translate-files",
+    version="0.1",
+    description="Translate files with MTUOC",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    author="S. Thuret",
-    author_email="contact@sebastien-thuret.fr",
-    url="https://www.argosopentech.com",
+    author="Tommi Nieminen (based on work by S. Thuret)",
+    author_email="nieminentommi@hotmail.com",
     packages=find_packages(),
     install_requires=required_packages,
 )
